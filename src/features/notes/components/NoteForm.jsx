@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 
 function NoteForm(props) {
@@ -6,10 +6,27 @@ function NoteForm(props) {
     PropTypes.checkPropTypes(NoteForm.propTypes, props, 'prop', 'NoteForm')
   }
 
-  const { initialTopic, initialText, submitLabel, onSave, onCancel } = props
+  const { initialTopic, initialText, submitLabel, onSave, onCancel, onStateChange, formRef } = props
   const [topic, setTopic] = useState(initialTopic)
   const [text, setText] = useState(initialText)
   const [error, setError] = useState('')
+  const formElementRef = useRef(null)
+
+  useEffect(() => {
+    if (!formRef) return
+    formRef.current = {
+      requestSubmit: () => formElementRef.current?.requestSubmit(),
+    }
+  }, [formRef])
+
+  const trimmedTopic = topic.trim()
+  const trimmedText = text.trim()
+  const dirty = trimmedTopic !== initialTopic.trim() || trimmedText !== initialText.trim()
+  const canSave = trimmedTopic !== '' && trimmedText !== ''
+
+  useEffect(() => {
+    onStateChange?.({ dirty, canSave })
+  }, [dirty, canSave, onStateChange])
 
   function handleSubmit(event) {
     event.preventDefault()
@@ -30,7 +47,7 @@ function NoteForm(props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate>
+    <form onSubmit={handleSubmit} ref={formElementRef} noValidate>
       <p>
         <label>
           Тема:
@@ -72,6 +89,8 @@ NoteForm.propTypes = {
   submitLabel: PropTypes.string.isRequired,
   onSave: PropTypes.func.isRequired,
   onCancel: PropTypes.func,
+  onStateChange: PropTypes.func,
+  formRef: PropTypes.shape({ current: PropTypes.any }),
 }
 
 export default NoteForm

@@ -1,4 +1,5 @@
 export { default as NoteForm } from './components/NoteForm.jsx'
 export { default as NoteList } from './components/NoteList.jsx'
 export { default as NoteCard } from './components/NoteCard.jsx'
+export { default as UnsavedChangesDialog } from './components/UnsavedChangesDialog.jsx'
 export { useNotes } from './hooks/useNotes.js'
