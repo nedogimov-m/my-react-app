@@ -1,5 +1,6 @@
+import { memo } from 'react'
 import PropTypes from 'prop-types'
-import { formatDate } from '../lib/storage.js'
+import { formatDate } from '../../../shared/utils/formatDate.js'
 
 function NoteCard(props) {
   if (import.meta.env.DEV) {
@@ -49,4 +50,4 @@ NoteCard.propTypes = {
   onShowHistory: PropTypes.func.isRequired,
 }
 
-export default NoteCard
+export default memo(NoteCard)

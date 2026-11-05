@@ -1,5 +1,6 @@
+import { useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { formatDate } from '../lib/storage.js'
+import { formatDate } from '../../../shared/utils/formatDate.js'
 
 function VersionHistory(props) {
   if (import.meta.env.DEV) {
@@ -8,10 +9,13 @@ function VersionHistory(props) {
 
   const { note, onClose } = props
 
-  const versions = [
-    { topic: note.topic, text: note.text, editedAt: note.updatedAt, isCurrent: true },
-    ...[...note.versions].reverse().map((version) => ({ ...version, isCurrent: false })),
-  ]
+  const versions = useMemo(
+    () => [
+      { topic: note.topic, text: note.text, editedAt: note.updatedAt, isCurrent: true },
+      ...[...note.versions].reverse().map((version) => ({ ...version, isCurrent: false })),
+    ],
+    [note]
+  )
 
   return (
     <div className="modal-overlay" onClick={onClose}>
